@@ -65,7 +65,7 @@ public class SomeExactTextsTest {
     SomeExactTexts someExactTexts = new SomeExactTexts("Two", "Three", "One");
     assertTrue(someExactTexts.apply(mockWebElementListWithTexts("One", "Two", "Three")));
   }
-
+/*
   @Test
   public void testApplyOnCorrectSizeAndCorrectElementsText() {
     testApplyMethodOnDifferentCondtions(true);
@@ -86,7 +86,7 @@ public class SomeExactTextsTest {
     when(mockedWebElement2.getText()).thenReturn(shouldMatch ? exactText2 : exactText1);
     assertEquals(shouldMatch, exactTexts.apply(asList(mockedWebElement1, mockedWebElement2)));
   }
-
+*/
   @Test
   public void testFailWithNullElementsList() {
     failOnEmptyOrNullElementsList(null);
@@ -98,18 +98,18 @@ public class SomeExactTextsTest {
   }
 
   private void failOnEmptyOrNullElementsList(List<WebElement> elements) {
-    ExactTexts exactTexts = new ExactTexts("One");
+    SomeExactTexts someExactTexts = new SomeExactTexts("One");
     Exception exception = new Exception("Exception method");
     try {
-      exactTexts.fail(mock(WebElementsCollection.class), elements, exception, 10000);
+      someExactTexts.fail(mock(WebElementsCollection.class), elements, exception, 10000);
     } catch (ElementNotFound ex) {
       assertEquals("Element not found {null}\nExpected: [One]", ex.getMessage());
     }
   }
-
+  // in progress
   @Test
-  public void failOnTextMismatch() {
-    ExactTexts exactTexts = new ExactTexts("One");
+  public void failOnOneTextMismatch() {
+    SomeExactTexts someExactTexts = new SomeExactTexts("One");
     Exception exception = new Exception("Exception method");
 
     WebElement mockedWebElement = mock(WebElement.class);
@@ -119,7 +119,7 @@ public class SomeExactTextsTest {
     when(mockedElementsCollection.description()).thenReturn("Collection description");
 
     try {
-      exactTexts.fail(mockedElementsCollection,
+      someExactTexts.fail(mockedElementsCollection,
                       singletonList(mockedWebElement),
                       exception,
                       10000);

@@ -6,6 +6,7 @@ import com.codeborne.selenide.impl.WebElementsCollection;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -24,44 +25,45 @@ public class SomeExactTextsTest {
     assertEquals("Expected texts list", asList("One", "Two", "Three"), someExactTexts.expectedTexts);
   }
 
-  // new - in progress
+  // new
   @Test
-  public void testApplyOnCorrectSingleElement() {
+  public void testApplyOnCorrectFirstElement() {
     SomeExactTexts someExactTexts = new SomeExactTexts("One");
-
-    WebElement mock1 = mock(WebElement.class);
-    WebElement mock2 = mock(WebElement.class);
-    WebElement mock3 = mock(WebElement.class);
-    when(mock1.getText()).thenReturn("One");
-    when(mock2.getText()).thenReturn("Two");
-    when(mock3.getText()).thenReturn("Three");
-    assertTrue(someExactTexts.apply(asList(mock1, mock2, mock3)));
+    assertTrue(someExactTexts.apply(mockWebElementListWithTexts("One", "Two", "Three")));
   }
 
+  @Test
+  public void testApplyOnCorrectLastElement() {
+    SomeExactTexts someExactTexts = new SomeExactTexts("Three");
+    assertTrue(someExactTexts.apply(mockWebElementListWithTexts("One", "Two", "Three")));
+  }
+
+  // new
   @Test
   public void testApplyOnTheSameList() {
     SomeExactTexts someExactTexts = new SomeExactTexts("One", "Two", "Three");
-
-    WebElement mock1 = mock(WebElement.class);
-    WebElement mock2 = mock(WebElement.class);
-    WebElement mock3 = mock(WebElement.class);
-    when(mock1.getText()).thenReturn("One");
-    when(mock2.getText()).thenReturn("Two");
-    when(mock3.getText()).thenReturn("Three");
-    assertTrue(someExactTexts.apply(asList(mock1, mock2, mock3)));
+    assertTrue(someExactTexts.apply(mockWebElementListWithTexts("One", "Two", "Three")));
   }
 
+  // new
+  @Test
+  public void testApplyOnTheSmallerList() {
+    SomeExactTexts someExactTexts = new SomeExactTexts("One", "Three");
+    assertTrue(someExactTexts.apply(mockWebElementListWithTexts("One", "Two", "Three")));
+  }
+
+  // new
   @Test
   public void testApplyOnTheBiggerList() {
     SomeExactTexts someExactTexts = new SomeExactTexts("One", "Two", "Three", "Four");
+    assertFalse(someExactTexts.apply(mockWebElementListWithTexts("One", "Two", "Three")));
+  }
 
-    WebElement mock1 = mock(WebElement.class);
-    WebElement mock2 = mock(WebElement.class);
-    WebElement mock3 = mock(WebElement.class);
-    when(mock1.getText()).thenReturn("One");
-    when(mock2.getText()).thenReturn("Two");
-    when(mock3.getText()).thenReturn("Three");
-    assertFalse(someExactTexts.apply(asList(mock1, mock2, mock3)));
+  // new
+  @Test
+  public void testApplyDifferentOrderList() {
+    SomeExactTexts someExactTexts = new SomeExactTexts("Two", "Three", "One");
+    assertTrue(someExactTexts.apply(mockWebElementListWithTexts("One", "Two", "Three")));
   }
 
   @Test
@@ -154,5 +156,21 @@ public class SomeExactTextsTest {
     catch (IllegalArgumentException expected) {
       assertThat(expected.getMessage(), is("No expected texts given"));
     }
+  }
+
+  /**
+   * Utility method, helps reduce the amount of code per test.
+   * Creates a mock list of WebElements with needed texts.
+   * @param texts - the texts that WebElement shoud have.
+   * @return list with WebElements having appropriate text from <code>texts</code>
+   */
+  public List<WebElement> mockWebElementListWithTexts(String... texts) {
+    List<WebElement> mockList = new ArrayList<>();
+    for (String text : texts) {
+      WebElement mock = mock(WebElement.class);
+      when(mock.getText()).thenReturn(text);
+      mockList.add(mock);
+    }
+    return mockList;
   }
 }
